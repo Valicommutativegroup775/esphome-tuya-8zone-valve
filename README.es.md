@@ -48,6 +48,19 @@ El firmware ESPHome funciona: WiFi conectado, web UI accesible, API de Home Assi
 - Verificar el mapeo correcto de LEDs a zonas
 - Ajustar lógica invertida donde sea necesario
 
+## Hoja de ruta
+
+La idea es aprovechar al máximo el [componente Sprinkler de ESPHome](https://esphome.io/components/sprinkler/) — programación, solapamiento de válvulas, avance automático, riego inverso, control de bomba y más.
+
+Pero primero lo primero: **hacer funcionar completamente el hardware**. Antes de añadir funcionalidades avanzadas, necesitamos:
+
+1. Identificar los pines GPIO exactos de los 3 botones físicos (SET, UP, DOWN)
+2. Verificar el mapeo correcto de LEDs a zonas
+3. Confirmar la lógica invertida de triacs y LEDs
+4. Hacer funcionar el buzzer como feedback
+
+Una vez la base sea sólida, el componente sprinkler nos dará un controlador de riego completo de serie.
+
 ## Archivos
 
 | Archivo | Descripción |

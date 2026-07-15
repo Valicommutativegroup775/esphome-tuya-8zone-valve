@@ -48,6 +48,19 @@ The ESPHome firmware works: WiFi connected, web UI accessible, Home Assistant AP
 - Verify the correct LED to zone mapping
 - Adjust inverted logic where necessary
 
+## Roadmap
+
+The goal is to take full advantage of the [ESPHome Sprinkler component](https://esphome.io/components/sprinkler/) — scheduling, valve overlap, auto-advance, reverse watering, pump control, and more.
+
+But first things first: **get the hardware fully working**. Before adding advanced features, we need to:
+
+1. Identify the exact GPIO pins for the 3 physical buttons (SET, UP, DOWN)
+2. Verify the correct LED-to-zone mapping
+3. Confirm the inverted logic for triacs and LEDs
+4. Get the buzzer working as feedback
+
+Once the base is solid, the sprinkler component will give us a proper irrigation controller out of the box.
+
 ## Files
 
 | File | Description |
