@@ -255,13 +255,7 @@ binary_sensor:
     on_press:
       then:
         - sprinkler.shutdown: irrigador
-  - platform: gpio
-    pin:
-      number: P14
-      inverted: false
-    name: "Sensor Lluvia"
-    filters:
-      - delayed_on: 1000ms
+
 
 sprinkler:
   - id: irrigador
