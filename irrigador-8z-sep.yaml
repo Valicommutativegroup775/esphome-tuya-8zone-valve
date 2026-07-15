@@ -223,24 +223,25 @@ switch:
       then:
         - output.turn_off: led_8
 
+script:
+  - id: toggle_riego
+    then:
+      - lambda: |
+          if (id(irrigador).active_valve().has_value()) {
+            id(irrigador).shutdown();
+          } else {
+            for (size_t i = 0; i < 8; i++) {
+              id(irrigador).enable_switch(i)->turn_on();
+            }
+            id(irrigador).resume_or_start_full_cycle();
+          }
+
 binary_sensor:
   - platform: gpio
     pin:
       number: P7
       inverted: true
-    name: "Botón 1 (P7)"
-    internal: true
-    on_press:
-      then:
-        - output.turn_on: buzzer
-        - delay: 100ms
-        - output.turn_off: buzzer
-        - sprinkler.previous_valve: irrigador
-  - platform: gpio
-    pin:
-      number: P6
-      inverted: true
-    name: "Botón 2 (P6)"
+    name: "Botón UP (P7)"
     internal: true
     on_press:
       then:
@@ -250,28 +251,28 @@ binary_sensor:
         - sprinkler.next_valve: irrigador
   - platform: gpio
     pin:
-      number: P8
+      number: P6
       inverted: true
-    name: "Botón 3 (P8)"
+    name: "Botón DOWN (P6)"
     internal: true
     on_press:
       then:
         - output.turn_on: buzzer
         - delay: 100ms
         - output.turn_off: buzzer
-        - sprinkler.resume_or_start_full_cycle: irrigador
+        - sprinkler.previous_valve: irrigador
   - platform: gpio
     pin:
-      number: P26
+      number: P8
       inverted: true
-    name: "Botón 4 (P26)"
+    name: "Botón SET (P8)"
     internal: true
     on_press:
       then:
         - output.turn_on: buzzer
         - delay: 100ms
         - output.turn_off: buzzer
-        - sprinkler.shutdown: irrigador
+        - script.execute: toggle_riego
 
 
 sprinkler:
