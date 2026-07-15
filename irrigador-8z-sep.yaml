@@ -64,6 +64,11 @@ sn74hc595:
 
 output:
   - platform: gpio
+    id: buzzer
+    pin:
+      number: P14
+      inverted: false
+  - platform: gpio
     id: led_1
     pin:
       sn74hc595: led_sn74hc595
@@ -227,6 +232,9 @@ binary_sensor:
     internal: true
     on_press:
       then:
+        - output.turn_on: buzzer
+        - delay: 100ms
+        - output.turn_off: buzzer
         - sprinkler.previous_valve: irrigador
   - platform: gpio
     pin:
@@ -236,6 +244,9 @@ binary_sensor:
     internal: true
     on_press:
       then:
+        - output.turn_on: buzzer
+        - delay: 100ms
+        - output.turn_off: buzzer
         - sprinkler.next_valve: irrigador
   - platform: gpio
     pin:
@@ -245,6 +256,9 @@ binary_sensor:
     internal: true
     on_press:
       then:
+        - output.turn_on: buzzer
+        - delay: 100ms
+        - output.turn_off: buzzer
         - sprinkler.resume_or_start_full_cycle: irrigador
   - platform: gpio
     pin:
@@ -254,6 +268,9 @@ binary_sensor:
     internal: true
     on_press:
       then:
+        - output.turn_on: buzzer
+        - delay: 100ms
+        - output.turn_off: buzzer
         - sprinkler.shutdown: irrigador
 
 
